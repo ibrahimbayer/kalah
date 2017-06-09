@@ -6,6 +6,7 @@ import org.ibayer.personal.kalah.model.Game;
 import org.ibayer.personal.kalah.model.Hole;
 import org.ibayer.personal.kalah.model.Player;
 import org.ibayer.personal.kalah.model.PlayerEnum;
+import org.ibayer.personal.kalah.model.factory.GameFactory;
 import org.ibayer.personal.kalah.service.engine.GameEngine;
 import org.junit.Assert;
 import org.junit.Before;
@@ -111,10 +112,27 @@ public class GameEngineTest {
 	
 	@Test
 	public void testAddCoinsToPlayer(){
-		game.setActivePlayer(PlayerEnum.BLACK);
-		initHoles();
-		
+		game = GameFactory.newInstance("");
+		Integer remainingCoins = gameEngine.addCoinsToPlayer(game,game.getPlayerBlack(), game.getPlayerWhite(),5, 5);
+		Assert.assertEquals(ZERO_COIN, remainingCoins);
+		Assert.assertEquals(Integer.valueOf(6), game.getPlayerBlack().getMainHole().getCoins());
+		Assert.assertEquals(ZERO_COIN, game.getPlayerWhite().getHoles().get(1).getCoins());
+		Assert.assertEquals(PlayerEnum.WHITE, game.getActivePlayer());
 	}
+	
+	@Test
+	public void testAddCoinsToPlayerWithRemaining(){
+		game = GameFactory.newInstance("");
+		Integer remainingCoins = gameEngine.addCoinsToPlayer(game,game.getPlayerBlack(), game.getPlayerWhite(),6, 4);
+		Assert.assertEquals(ZERO_COIN, remainingCoins);
+		Assert.assertEquals(ONE_COIN, game.getPlayerBlack().getMainHole().getCoins());
+		Assert.assertEquals(Integer.valueOf(6), game.getPlayerWhite().getHoles().get(1).getCoins());
+		Assert.assertEquals(Integer.valueOf(6), game.getPlayerBlack().getHoles().get(5).getCoins());
+		Assert.assertEquals(Integer.valueOf(7), game.getPlayerBlack().getHoles().get(1).getCoins());
+		Assert.assertEquals(Integer.valueOf(7), game.getPlayerBlack().getHoles().get(0).getCoins());
+		Assert.assertEquals(PlayerEnum.BLACK, game.getActivePlayer());
+	}
+
 
 	private void initHoles() {
 		playerBlack.setMainHole(new Hole(INIT_HOLE_COINS, null));

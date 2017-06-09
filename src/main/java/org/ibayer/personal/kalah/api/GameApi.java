@@ -6,7 +6,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import javax.validation.Valid;
 
 import org.ibayer.personal.kalah.model.Game;
-import org.ibayer.personal.kalah.service.KalahService;
+import org.ibayer.personal.kalah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
@@ -33,17 +33,17 @@ import io.swagger.annotations.ApiResponses;
 public class GameApi {
 
 	@Autowired
-	public GameApi(final KalahService kalahService) {
-		this.kalahService = kalahService;
+	public GameApi(final GameService gameService) {
+		this.gameService = gameService;
 	}
 
-	private final KalahService kalahService;
+	private final GameService gameService;
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ApiOperation(value = "Creates a new game", notes = "Creates a new game", tags = { "Games" })
 	@ApiResponses({ @ApiResponse(code = 201, message = "Saved!", response = Game.class) })
 	public ResponseEntity<Resource<Game>> post(@Valid @RequestBody Game game) {
-		game = kalahService.save(game);
+		game = gameService.save(game);
 		Resource<Game> resource = generateResource(game);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
@@ -53,7 +53,7 @@ public class GameApi {
 	@ApiResponses({ @ApiResponse(code = 200, message = "Updated!", response = Game.class) })
 	public ResponseEntity<Resource<Game>> put(@PathVariable(name = "gameId") String gameId, @Valid @RequestBody Game game,
 			@RequestParam Integer moveId) {
-		game = kalahService.put(game, gameId, moveId);
+		game = gameService.put(game, gameId, moveId);
 		Resource<Game> resource = generateResource(game);
 		return new ResponseEntity<>(resource, HttpStatus.OK);
 	}
@@ -62,7 +62,7 @@ public class GameApi {
 	@ApiOperation(value = "Gets an existing game", notes = "Gets an existing game", tags = { "Games" })
 	@ApiResponses({ @ApiResponse(code = 200, message = "Returned!", response = Game.class) })
 	public ResponseEntity<Resource<Game>> get(@PathVariable(name = "gameId") String gameId) {
-		Game game = kalahService.get(gameId);
+		Game game = gameService.get(gameId);
 		Resource<Game> resource = generateResource(game);
 		return new ResponseEntity<>(resource, HttpStatus.OK);
 	}

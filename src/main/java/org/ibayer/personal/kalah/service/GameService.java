@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class KalahService {
+public class GameService {
 
 	private static final int MIN_HOLE_INDEX = 1;
 
@@ -34,7 +34,7 @@ public class KalahService {
 	 * @param gameEngine
 	 */
 	@Autowired
-	public KalahService(final GameRepository gameRepository, final GameEngine gameEngine) {
+	public GameService(final GameRepository gameRepository, final GameEngine gameEngine) {
 		this.gameRepository = gameRepository;
 		this.gameEngine = gameEngine;
 	}
@@ -69,12 +69,9 @@ public class KalahService {
 		// get all coins remaining at hole
 		int coinsRemaining = gameEngine.getAllCoinsInHole(player, holeIndex--);
 
-		coinsRemaining = gameEngine.addCoinsToPlayer(player, opponent, coinsRemaining, holeIndex);
+		coinsRemaining = gameEngine.addCoinsToPlayer(game,player, opponent, coinsRemaining, holeIndex);
 
-		final Boolean changeActivePlayer = gameEngine.addCoinsToOpponent(opponent, coinsRemaining);
-		if (changeActivePlayer) {
-			gameEngine.changeActivePlayer(game);
-		}
+		gameEngine.addCoinsToOpponent(game,opponent, coinsRemaining);
 
 		// check remaining coins on all holes
 		gameEngine.checkIsGameFinished(game);

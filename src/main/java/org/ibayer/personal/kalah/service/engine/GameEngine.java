@@ -77,16 +77,16 @@ public class GameEngine {
 		int remainingCoinsBlackPlayer = this.getRemainingCoinsOf(game.getPlayerBlack());
 		int remainingCoinsWhitePlayer = this.getRemainingCoinsOf(game.getPlayerWhite());
 		if (remainingCoinsBlackPlayer == 0 || remainingCoinsWhitePlayer == 0) {
-			
+
 			// add remaining coins in holes to main hole
 			game.getPlayerBlack().getMainHole()
 					.setCoins(game.getPlayerBlack().getMainHole().getCoins() + remainingCoinsBlackPlayer);
 			game.getPlayerWhite().getMainHole()
 					.setCoins(game.getPlayerWhite().getMainHole().getCoins() + remainingCoinsWhitePlayer);
-			
+
 			// empty holes
-			game.getPlayerBlack().getHoles().forEach(hole->hole.setCoins(0));
-			game.getPlayerWhite().getHoles().forEach(hole->hole.setCoins(0));
+			game.getPlayerBlack().getHoles().forEach(hole -> hole.setCoins(0));
+			game.getPlayerWhite().getHoles().forEach(hole -> hole.setCoins(0));
 
 			game.setFinished(true);
 			// TODO if same count of coins
@@ -129,7 +129,7 @@ public class GameEngine {
 	 *            index of hole
 	 * @return remaining coins after all holes has been feeded
 	 */
-	public int addCoinsToPlayer(Player player, Player opponent, int coinsRemaining, int holeIndex) {
+	public int addCoinsToPlayer(Game game, Player player, Player opponent, int coinsRemaining, int holeIndex) {
 
 		// one by one add coins to remaining holes
 		while (holeIndex >= 0 && coinsRemaining > 0) {
@@ -138,6 +138,7 @@ public class GameEngine {
 			// if there are no remaining coins in player zone get from opponent
 			if (coinsRemaining == 0) {
 				getAllOpponentCoinsAt(player, opponent, holeIndex);
+				changeActivePlayer(game);
 			}
 			holeIndex--;
 		}
@@ -153,16 +154,14 @@ public class GameEngine {
 	 * The player who has the turn will add remaining coins to his holes one by
 	 * one. The direction of play is from 0 to 6.
 	 * 
+	 * @param game
+	 *            Game instance
 	 * @param opponent
 	 *            Opponent Player referred by {@link PlayerEnum}
 	 * @param coinsRemaining
 	 *            remaining coins to play
-	 * @return flag to change player or not. The player is changed if there are
-	 *         remaining coins to add opponents hole. If player has finished
-	 *         seeds on his main hole gains one turn
 	 */
-	public Boolean addCoinsToOpponent(Player opponent, int coinsRemaining) {
-		Boolean changeActivePlayer = Boolean.FALSE;
+	public void addCoinsToOpponent(Game game, Player opponent, int coinsRemaining) {
 		// one by one add coins to opponent holes if remaining
 		if (coinsRemaining > 0) {
 			int holeIndex = 0;
@@ -171,9 +170,8 @@ public class GameEngine {
 				coinsRemaining--;
 				holeIndex++;
 			}
-			changeActivePlayer = Boolean.TRUE;
+			changeActivePlayer(game);
 		}
-		return changeActivePlayer;
 	}
 
 	private void getAllOpponentCoinsAt(Player player, Player opponent, int holeIndex) {

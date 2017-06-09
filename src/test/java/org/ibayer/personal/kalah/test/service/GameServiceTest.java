@@ -6,7 +6,7 @@ import org.ibayer.personal.kalah.model.Game;
 import org.ibayer.personal.kalah.model.Player;
 import org.ibayer.personal.kalah.model.PlayerEnum;
 import org.ibayer.personal.kalah.repository.GameRepository;
-import org.ibayer.personal.kalah.service.KalahService;
+import org.ibayer.personal.kalah.service.GameService;
 import org.ibayer.personal.kalah.service.engine.GameEngine;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 
-public class KalahServiceTest {
+public class GameServiceTest {
 
 	@Mock
 	GameRepository gameRepository = Mockito.mock(GameRepository.class);
@@ -23,13 +23,13 @@ public class KalahServiceTest {
 	GameEngine gameEngine = Mockito.mock(GameEngine.class);
 
 	@Spy
-	KalahService kalahService = new KalahService(gameRepository, gameEngine);
+	GameService gameService = new GameService(gameRepository, gameEngine);
 
 	public void testSave() {
 		Game game = initGame();
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(game);
 
-		game = kalahService.save(game);
+		game = gameService.save(game);
 
 		Assert.assertNotNull(game);
 		Assert.assertNotNull(game.getResourceId());
@@ -54,59 +54,58 @@ public class KalahServiceTest {
 
 		Mockito.when(gameEngine.getAllCoinsInHole(Mockito.any(Player.class), Mockito.anyInt())).thenReturn(6);
 
-		Mockito.when(gameEngine.addCoinsToPlayer(Mockito.any(Player.class), Mockito.any(Player.class), Mockito.anyInt(),
-				Mockito.anyInt())).thenReturn(2);
+		Mockito.when(gameEngine.addCoinsToPlayer(Mockito.any(Game.class), Mockito.any(Player.class),
+				Mockito.any(Player.class), Mockito.anyInt(), Mockito.anyInt())).thenReturn(2);
 
-		Mockito.when(gameEngine.addCoinsToOpponent(Mockito.any(Player.class), Mockito.anyInt()))
-				.thenReturn(Boolean.TRUE);
+		Mockito.doNothing().when(gameEngine).addCoinsToOpponent(Mockito.any(Game.class), Mockito.any(Player.class),
+				Mockito.anyInt());
 
-		
 		Mockito.doNothing().when(gameEngine).changeActivePlayer(Mockito.any(Game.class));
-		
+
 		Mockito.doNothing().when(gameEngine).checkIsGameFinished(Mockito.any(Game.class));
-		kalahService.put(game,"", 1);
-		
-		//gameEngine changeActivePlayer has to be called one time
-		Mockito.verify(gameEngine,Mockito.times(1)).changeActivePlayer(Mockito.any(Game.class));
+		gameService.put(game, "", 1);
+
+		// gameEngine changeActivePlayer has to be called one time
+		Mockito.verify(gameEngine, Mockito.times(1)).checkIsGameFinished(Mockito.any(Game.class));
 	}
-	
+
 	@Test(expected = InvalidRequestException.class)
-	public void testNegativeMoveId(){
+	public void testNegativeMoveId() {
 		Game game = initGame();
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(game);
-		kalahService.put(game, "",Integer.MIN_VALUE);
+		gameService.put(game, "", Integer.MIN_VALUE);
 	}
-	
+
 	@Test(expected = InvalidRequestException.class)
-	public void testBigMoveId(){
+	public void testBigMoveId() {
 		Game game = initGame();
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(game);
-		kalahService.put(game, "",Integer.MAX_VALUE);
+		gameService.put(game, "", Integer.MAX_VALUE);
 	}
-	
+
 	@Test
-	public void testNullMoveId(){
+	public void testNullMoveId() {
 		Game game = initGame();
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(game);
-		kalahService.put(game, "",null);
-		Mockito.verify(gameEngine,Mockito.times(0)).getPlayer(Mockito.any(Game.class));
+		gameService.put(game, "", null);
+		Mockito.verify(gameEngine, Mockito.times(0)).getPlayer(Mockito.any(Game.class));
 	}
-	
+
 	@Test
-	public void testGetGame(){
+	public void testGetGame() {
 		Game game = initGame();
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(game);
-		
-		Game actualGame = kalahService.get("");
+
+		Game actualGame = gameService.get("");
 		Assert.assertNotNull(actualGame);
 		Assert.assertEquals(game, actualGame);
-		
+
 	}
-	
+
 	@Test(expected = ResourceNotFoundException.class)
-	public void testGetGameNull(){
+	public void testGetGameNull() {
 		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(null);
-		kalahService.get("");
+		gameService.get("");
 	}
 
 	private Game initGame() {
