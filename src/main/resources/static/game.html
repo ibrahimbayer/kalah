@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="kalahApp">
+<head>
+<meta charset="UTF-8">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-resource.js"></script>
+<script src="kalah.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+	integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+	crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+	integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	crossorigin="anonymous"></script>
+<title>Kalah Game</title>
+</head>
+<body>
+	<div ng-controller="KalahController as controller" class="container">
+		<button class="btn btn-default" type="button" ng-click="newGame();">Start
+			New Game</button>
+		<div class="alert alert-success alert-dismissible" role="alert"
+			ng-if="controller.message">
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			{{controller.message}}
+		</div>
+		<h1>{{game}}</h1>
+		<div class="panel panel-default">
+			<div class="panel-heading">PLAYER BLACK</div>
+			<div class="panel-body">
+				<div ng-if="controller.game.playerBlack">
+					<div class="row">
+						<div class="col-sm-2">
+							<button class="btn btn-primary">Main hole
+								{{controller.game.playerBlack.mainHole.coins}}</button>
+						</div>
+
+						<div class="col-sm-10">
+							<div class="row">
+								<div class="col-sm-2"
+									ng-repeat="hole in controller.game.playerBlack.holes">
+									<button class="btn btn-danger" ng-click="play(hole.index);"
+										ng-disabled="controller.game.activePlayer != 'BLACK'">Play
+										{{hole.index}} ( {{hole.coins}})</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading">PLAYER WHITE</div>
+			<div class="panel-body">
+				<div ng-if="controller.game.playerWhite">
+					<div class="row">
+						<div class="col-sm-2">
+							<button class="btn btn-primary">Main hole
+								{{controller.game.playerWhite.mainHole.coins}}</button>
+						</div>
+						<div class="col-sm-10">
+							<div class="row">
+								<div class="col-sm-2"
+									ng-repeat="hole in controller.game.playerWhite.holes">
+									<button class="btn btn-danger" ng-click="play(hole.index);"
+										ng-disabled="controller.game.activePlayer != 'WHITE'">Play
+										{{hole.index}} ( {{hole.coins}})</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+	</div>
+	</div>
+</body>
+</html>

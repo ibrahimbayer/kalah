@@ -11,6 +11,10 @@ mvn install "please refer to Maven documentation for setting up mvn on your comp
 
 mvn spring-boot:run Starts the application
 
+# User Interface
+
+You can access to simple user interface for playing game via http://localhost:8080/game.html url.
+
 # Api Methods
 You can access swagger documentation via localhost:8080/swagger-ui.html
 
