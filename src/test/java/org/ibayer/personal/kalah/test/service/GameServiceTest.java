@@ -1,7 +1,6 @@
 package org.ibayer.personal.kalah.test.service;
 
 import org.ibayer.personal.kalah.exception.InvalidRequestException;
-import org.ibayer.personal.kalah.exception.ResourceNotFoundException;
 import org.ibayer.personal.kalah.model.Game;
 import org.ibayer.personal.kalah.model.Player;
 import org.ibayer.personal.kalah.model.PlayerEnum;
@@ -100,12 +99,6 @@ public class GameServiceTest {
 		Assert.assertNotNull(actualGame);
 		Assert.assertEquals(game, actualGame);
 
-	}
-
-	@Test(expected = ResourceNotFoundException.class)
-	public void testGetGameNull() {
-		Mockito.when(gameRepository.findByResourceId(Mockito.anyString())).thenReturn(null);
-		gameService.get("");
 	}
 
 	private Game initGame() {

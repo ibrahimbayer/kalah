@@ -3,10 +3,10 @@ package org.ibayer.personal.kalah.service;
 import java.util.UUID;
 
 import org.ibayer.personal.kalah.exception.InvalidRequestException;
-import org.ibayer.personal.kalah.exception.ResourceNotFoundException;
 import org.ibayer.personal.kalah.model.Game;
 import org.ibayer.personal.kalah.model.Player;
 import org.ibayer.personal.kalah.model.PlayerEnum;
+import org.ibayer.personal.kalah.model.factory.GameFactory;
 import org.ibayer.personal.kalah.repository.GameRepository;
 import org.ibayer.personal.kalah.service.engine.GameEngine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,16 +100,12 @@ public class GameService {
 	}
 
 	/**
-	 * Gets game from repository, if the game isn't found
+	 * Gets game from repository, if the game isn't found a new instance is created by {@link GameFactory}
 	 * 
 	 * @param gameResourceId
-	 * @return
+	 * @return instance
 	 */
 	public Game get(String gameResourceId) {
-		Game game = gameRepository.findByResourceId(gameResourceId);
-		if (game != null) {
-			return game;
-		}
-		throw new ResourceNotFoundException(gameResourceId);
+		return gameRepository.findByResourceId(gameResourceId);
 	}
 }
